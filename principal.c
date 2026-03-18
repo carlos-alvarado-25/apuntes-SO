@@ -16,6 +16,9 @@ int main()
         puts("El proceso suicida hijo ha acabado de ejecutar el esclavo, e largo");
     }
     else if (hijo == 0) {
-        execlp("./esclavo", "", "")
+        execlp("./esclavo", "esclavo", NULL); // En este punto, principal.c se muere, y pasa a sustituirse por esclavo.c
+        puts("Esto en teorìa no sale ya por pantalla");
     }
+    
+    return 0;
 }
