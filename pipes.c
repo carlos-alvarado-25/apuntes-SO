@@ -7,31 +7,36 @@
 
 int main()
 {
-    int pipe[2];
+    int tuberia[2]; // Cambiamos el nombre para que no choque con la función pipe()
     
     pid_t hijo;
     char mensaje[] = "Hola proceso hijo! Misión Cumplida!";
     char buffer[100];
     
-    pipe(pipe);
+    // Ahora sí estamos llamando a la función pipe() y pasándole nuestro array
+    pipe(tuberia); 
     
-    hijo=fork();
+    hijo = fork();
     
     if (hijo > 0)
     {
-        close(pipe[0]); // Siempre se cierra el lado de la tuberìa que no se va a usar, (Escribiremos en 1)
+        // Siempre se cierra el lado de la tubería que no se va a usar
+        close(tuberia[0]); 
         printf("[Padre] escribiendo en el pipe...\n");
-        write(pipe[1], mensaje, sizeof(mensaje)); //Escribe en el lado 1 de la tuberìa
-        close(pipe[1]);
+        sleep(2);
+        // Escribe en el lado 1 de la tubería
+        write(tuberia[1], mensaje, sizeof(mensaje)); 
+        close(tuberia[1]);
+        
         wait(NULL);
         puts("El hijo ha finalizado, termino mi ejecución \n");
     }
     else if (hijo == 0)
     {
-        close(pipe[1]);
-        read(pipe[0], buffer, sizeof(buffer));
-        printf("[Hijo] ha recibido este mensaje de papá %s\n", buffer);
-        close(pipe[0]);
+        close(tuberia[1]);
+        read(tuberia[0], buffer, sizeof(buffer));
+        printf("[Hijo] ha recibido este mensaje de papá: %s\n", buffer);
+        close(tuberia[0]);
         exit(EXIT_SUCCESS);
     }
     
