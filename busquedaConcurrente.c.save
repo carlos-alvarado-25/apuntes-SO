@@ -1,0 +1,11 @@
+#include <stdio.h>
+#include <unistd.h>
+#include <stdlib.h>
+#include <sys/wait.h>
+
+int main() {
+    int array[10] = {5, 4, 2, 4, 23, 99};
+    int objetivo = 4;
+    
+    pid_t pid1, pid2;
+}
