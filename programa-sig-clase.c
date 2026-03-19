@@ -1,0 +1,2 @@
+/* Creamos un hijo, papá va a crear 10 números aleatorios. Y se los envía uno a uno al hijo. El hijo va a averiguar cuales de estos números son primos
+y lo va a ir imprimiendo por pantalla. Y le devuelve al padre, el total de primos que ha encontrado.*/
