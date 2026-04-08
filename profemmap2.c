@@ -23,8 +23,22 @@ int main()
 
     if (hijo == 0)
     {
+        variable_compartida[0] = 0;
+        variable_compartida[1] = 1;
+
+        for (int i = 2; i < N; i++) {
+            variable_compartida[i] = variable_compartida[i - 1] + variable_compartida[i - 2];
+        }
+
+        exit(0);
 
     } else if (hijo > 0) {
-        
+        wait(NULL);
+
+        printf("Los 10 primeros números de Fibonacci son: \n");
+        for (int i = 0; i < N; i++) {
+            printf("%d ", variable_compartida[i]);
+        }
+        printf("\n");
     }
 }
