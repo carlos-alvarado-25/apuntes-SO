@@ -10,16 +10,23 @@ EL padre los lee tras esperar al hijo y los saca por pantalla*/
 
 #define N 10
 
-static int variable_compartida[];
+static int *variable_compartida;
 
 
 int main()
 {
     pid_t hijo;
 
-    variable_compartida = mmap(NULL, sizeof(*variable_compartida), PROT_READ | PROT_WRITE, MAP_SHARED | MAP_ANONYMOUS, -1, 0);
+    variable_compartida = mmap(NULL, sizeof(*variable_compartida) * N, PROT_READ | PROT_WRITE, MAP_SHARED | MAP_ANONYMOUS, -1, 0);
 
     hijo = fork();
+
+    if (hijo < 0)
+    {
+        perror("fork");
+        munmap(variable_compartida, N * sizeof(int));
+        exit(EXIT_FAILURE);
+    }
 
     if (hijo == 0)
     {
@@ -30,6 +37,7 @@ int main()
             variable_compartida[i] = variable_compartida[i - 1] + variable_compartida[i - 2];
         }
 
+        munmap(variable_compartida, N * sizeof(int));
         exit(0);
 
     } else if (hijo > 0) {
@@ -40,5 +48,9 @@ int main()
             printf("%d ", variable_compartida[i]);
         }
         printf("\n");
+
+        munmap(variable_compartida, N * sizeof(int));
     }
+
+    return EXIT_SUCCESS;
 }
