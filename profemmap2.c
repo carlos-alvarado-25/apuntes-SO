@@ -21,6 +21,13 @@ int main()
 
     hijo = fork();
 
+    if (hijo < 0)
+    {
+        perror("fork");
+        munmap(variable_compartida, N * sizeof(int));
+        exit(EXIT_FAILURE);
+    }
+
     if (hijo == 0)
     {
         variable_compartida[0] = 0;
@@ -30,6 +37,7 @@ int main()
             variable_compartida[i] = variable_compartida[i - 1] + variable_compartida[i - 2];
         }
 
+        munmap(variable_compartida, N * sizeof(int));
         exit(0);
 
     } else if (hijo > 0) {
@@ -40,5 +48,9 @@ int main()
             printf("%d ", variable_compartida[i]);
         }
         printf("\n");
+
+        munmap(variable_compartida, N * sizeof(int));
     }
+
+    return EXIT_SUCCESS;
 }
