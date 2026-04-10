@@ -10,14 +10,14 @@ EL padre los lee tras esperar al hijo y los saca por pantalla*/
 
 #define N 10
 
-static int variable_compartida[];
+static int *variable_compartida;
 
 
 int main()
 {
     pid_t hijo;
 
-    variable_compartida = mmap(NULL, sizeof(*variable_compartida), PROT_READ | PROT_WRITE, MAP_SHARED | MAP_ANONYMOUS, -1, 0);
+    variable_compartida = mmap(NULL, sizeof(int) * N, PROT_READ | PROT_WRITE, MAP_SHARED | MAP_ANONYMOUS, -1, 0);
 
     hijo = fork();
 
