@@ -12,31 +12,31 @@ pthread_mutex_t mutex = PTHREAD_MUTEX_INITIALIZER;
 
 int astronautas_a_bordo = 0;
 
-pthread_t hiloControl;
+pthread_t hilo_control;
 static volatile sig_atomic_t nave_lista = 0;
 
 void manejador_supervisor(int sig) {
     nave_lista = 1;
 }
 
-int abordarAstronautas(long id) {
-    int pudoAbordar = 0;
+int abordar_astronautas(long id) {
+    int pudo_abordar = 0;
 
     pthread_mutex_lock(&mutex);
 
     if (astronautas_a_bordo < CAPACIDAD) {
         astronautas_a_bordo++;
         printf("COMPUERTA [%ld]: Astronauta a bordo. Total %d/50 \n", id, astronautas_a_bordo);
-        pudoAbordar = 1;
+        pudo_abordar = 1;
 
         if (astronautas_a_bordo == CAPACIDAD) {
-            pthread_kill(hiloControl, SIGUSR2);
+            pthread_kill(hilo_control, SIGUSR2);
         }
     }
 
     pthread_mutex_unlock(&mutex);
 
-    return pudoAbordar;
+    return pudo_abordar;
 }
 
 void* embarcar(void* arg) {
@@ -45,7 +45,7 @@ void* embarcar(void* arg) {
 
     while(1) {
         
-        if (abordarAstronautas(id) == 0) {
+        if (abordar_astronautas(id) == 0) {
             break;
         }
 
@@ -55,7 +55,7 @@ void* embarcar(void* arg) {
     return NULL;
 }
 
-void* funcion_supervisor() {
+void* funcion_supervisor(void* arg) {
     signal(SIGUSR2, manejador_supervisor);
 
     printf("[TORRE] Iniciando protocolo de embarque. A la espera de confirmación...\n");
@@ -64,7 +64,7 @@ void* funcion_supervisor() {
         pause();
     }
 
-    printf("\n🚨 [TORRE] Capacidad al 100. ¡Iniciando secuencia de lanzamiento! 🚀\n");
+    printf("\n🚨 [TORRE] Capacidad al 100%%. ¡Iniciando secuencia de lanzamiento! 🚀\n");
 
     return NULL;
 }
@@ -72,9 +72,9 @@ void* funcion_supervisor() {
 int main() {
     pthread_t hilos[NUM_COMPUERTAS];
 
-    printf("INICIA DESPEGUE... \n");
+    printf("INICIA DESPEGUE... \n\n");
 
-    pthread_create(&hiloControl, NULL, funcion_supervisor, NULL);
+    pthread_create(&hilo_control, NULL, funcion_supervisor, NULL);
     sleep(1);
 
     for (long i = 0; i < NUM_COMPUERTAS; i++) {
@@ -85,10 +85,9 @@ int main() {
         pthread_join(hilos[i], NULL);
     }
 
-    pthread_join(hiloControl, NULL);
+    pthread_join(hilo_control, NULL);
 
     pthread_mutex_destroy(&mutex);
 
     return 0;
-
 }
